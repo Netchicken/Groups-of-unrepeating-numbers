@@ -19,15 +19,18 @@ namespace CounsellingTriads
         {
             InitializeComponent();
 
+            myStudents = new Students();
+
             //Instantiate the lists = names
-            for (int i = 1; i < 22; i++)
-            {
-                myStudents.StudentHistory[i] = new List<string>();
-            }
+            //for (int i = 1; i < 22; i++)
+            //{
+            //    myStudents.StudentHistory[i] = new List<string>();
+            //}
         }
 
         private void BtnCalc_Click(object sender, EventArgs e)
         {
+            myStudents = new Students();//reset all teh class variables on click
             lbxOutput.Items.Clear();
 
             GenerateGroups();
@@ -36,8 +39,6 @@ namespace CounsellingTriads
 
         private void GenerateGroups()
         {
-            //reinstantiate everying to clear out old data
-            myStudents = new Students();
 
             //need to have a list of all students to record all students they have been in a group with
             //output to date = 25 groups
@@ -66,9 +67,9 @@ namespace CounsellingTriads
                     }
                     //Need to add the first member manually or it crashes at the foreach
 
-                    if (myStudents.singlegroup.Count == 0)
+                    if (myStudents.SingleGroup.Count == 0)
                     {
-                        myStudents.singlegroup.Add(myStudents.student);
+                        myStudents.SingleGroup.Add(myStudents.student);
                         myStudents.StudentHistory[1].Add(myStudents.student);
                     }
                     else
@@ -85,7 +86,7 @@ namespace CounsellingTriads
                             if (myStudents.HasOneStudentBeenAdded == false)
                             {
                                 myStudents.HasOneStudentBeenAdded = true;
-                                myStudents.singlegroup.Add(myStudents.StudentToAdd);
+                                myStudents.SingleGroup.Add(myStudents.StudentToAdd);
                             }
                         }
 
@@ -95,7 +96,7 @@ namespace CounsellingTriads
                             //add the student to the group
                             if (myStudents.HasStudentBeenBefore == false)
                             {
-                                myStudents.singlegroup.Add(myStudents.StudentToAdd);
+                                myStudents.SingleGroup.Add(myStudents.StudentToAdd);
                             }
                         }
 
@@ -103,17 +104,17 @@ namespace CounsellingTriads
 
                         //if the group has reached 3 then print it and clear it for the next group
 
-                        if (myStudents.singlegroup.Count == 3)
+                        if (myStudents.SingleGroup.Count == 3)
                         {
                             String Group = null;
                             myStudents.HasOneStudentBeenAdded = false; // reset for new group
-                            foreach (var item in myStudents.singlegroup)
+                            foreach (var item in myStudents.SingleGroup)
                             {
                                 Group += item + " ";
                             }
                             myStudents.Countgroups++;
                             lbxOutput.Items.Add(Group);
-                            myStudents.singlegroup.Clear(); //empty the list ready for the next one
+                            myStudents.SingleGroup.Clear(); //empty the list ready for the next one
                         }
                     }
 
@@ -126,7 +127,7 @@ namespace CounsellingTriads
 
         private void GenerateMembers()
         {
-            foreach (var AGroupStudent in myStudents.singlegroup) // for each person in the group
+            foreach (var AGroupStudent in myStudents.SingleGroup) // for each person in the group
             { //convert the person to an int to find their history list
                 int GroupStudent = Convert.ToInt32(AGroupStudent);
 
@@ -156,27 +157,31 @@ namespace CounsellingTriads
             }
         }
 
-        public void RandomSelection()
-        {
-            bool isFindingAmatch = true;
+        //public void RandomSelection()
+        //{
+        //    bool isFindingAmatch = true;
 
 
-            if (myStudents.singlegroup.Count == 0)
-            {
-                myStudents.singlegroup.Add(myStudents.student);
-                myStudents.StudentHistory[1].Add(myStudents.student);
-            }
+        //    if (myStudents.SingleGroup.Count == 0)
+        //    {
+        //        myStudents.SingleGroup.Add(myStudents.student);
+        //        myStudents.StudentHistory[1].Add(myStudents.student);
+        //    }
 
-            while (isFindingAmatch)
-            {
-                myStudents.student = myStudents.MyRnd.Next(1, 22).ToString();
+        //    while (isFindingAmatch)
+        //    {
+        //        myStudents.student = myStudents.MyRnd.Next(1, 22).ToString();
+        //        GenerateMembers();
+        //    }
 
-            }
+        //    //add the student to the group
+        //    if (myStudents.HasStudentBeenBefore == false)
+        //    {
+        //        myStudents.SingleGroup.Add(myStudents.StudentToAdd);
+        //    }
 
 
-
-
-        }
+        //}
 
         private void rbUniques_CheckedChanged(object sender, EventArgs e)
         {
@@ -218,21 +223,5 @@ namespace CounsellingTriads
     {
         public List<string> AllTeams = new List<string>();
     }
-    internal class Students
-    {
-        public List<string> singlegroup = new List<string>();
-        public List<string>[] StudentHistory = new List<string>[22];
-        public List<string> studentHistory = new List<string>();
 
-        public bool IsUnique = true; //Unique or NonUnique groups
-        public bool IsRnd = false; //using the rnd radiobutton
-        public bool HasStudentBeenBefore = false;
-        public bool HasOneStudentBeenAdded = false;
-        public string student = null;
-        public string StudentToAdd = null;
-
-        public int Countgroups = 0;
-        public int CountStudents = 21;
-        public Random MyRnd = new Random();
-    }
 }
