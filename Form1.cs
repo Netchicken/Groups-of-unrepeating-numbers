@@ -22,15 +22,15 @@ namespace CounsellingTriads
             myStudents = new Students();
 
             //Instantiate the lists = names
-            //for (int i = 1; i < 22; i++)
-            //{
-            //    myStudents.StudentHistory[i] = new List<string>();
-            //}
+            for (int i = 1; i < 22; i++)
+            {
+                myStudents.StudentHistory[i] = new List<string>();
+            }
         }
 
         private void BtnCalc_Click(object sender, EventArgs e)
         {
-            myStudents = new Students();//reset all teh class variables on click
+
             lbxOutput.Items.Clear();
 
             GenerateGroups();
@@ -70,6 +70,7 @@ namespace CounsellingTriads
                     if (myStudents.SingleGroup.Count == 0)
                     {
                         myStudents.SingleGroup.Add(myStudents.student);
+                        //  myStudents.StudentHistory[1].Add("1");
                         myStudents.StudentHistory[1].Add(myStudents.student);
                     }
                     else
