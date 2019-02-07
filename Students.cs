@@ -12,7 +12,7 @@ namespace CounsellingTriads
     {
         public List<string> SingleGroup = new List<string>();
         public List<string>[] StudentHistory = new List<string>[22];
-        //  public List<string> studentHistory = new List<string>();
+        public List<int[]> GeneratedGroups = new List<int[]>();
 
         public bool HasStudentBeenBefore = false;
         public bool HasOneStudentBeenAdded = false;

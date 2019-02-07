@@ -37,6 +37,7 @@
             this.btnLoadNames = new System.Windows.Forms.Button();
             this.lbxOutputNames = new System.Windows.Forms.ListBox();
             this.btnGenerateNames = new System.Windows.Forms.Button();
+            this.btnPrint = new System.Windows.Forms.Button();
             this.gbTypes.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -144,11 +145,22 @@
             this.btnGenerateNames.UseVisualStyleBackColor = true;
             this.btnGenerateNames.Click += new System.EventHandler(this.btnGenerateNames_Click);
             // 
+            // btnPrint
+            // 
+            this.btnPrint.Location = new System.Drawing.Point(166, 228);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(106, 23);
+            this.btnPrint.TabIndex = 12;
+            this.btnPrint.Text = "Print Groups";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(720, 319);
+            this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.btnGenerateNames);
             this.Controls.Add(this.lbxOutputNames);
             this.Controls.Add(this.btnLoadNames);
@@ -174,6 +186,7 @@
         private System.Windows.Forms.Button btnLoadNames;
         private System.Windows.Forms.ListBox lbxOutputNames;
         private System.Windows.Forms.Button btnGenerateNames;
+        private System.Windows.Forms.Button btnPrint;
     }
 }
 

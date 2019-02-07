@@ -41,18 +41,16 @@ namespace CounsellingTriads
             lbxOutput.Items.Clear();
 
             GenerateGroups();
+            GenerateNameGroups();
         }
 
 
         private void GenerateGroups()
         {
-
             //need to have a list of all students to record all students they have been in a group with
             //output to date = 25 groups
 
             //All students have a list that contains all the students they have been in a group with before.
-
-
 
             int UpperLimit = Operations.StudentNameCount + 1;
             for (int k = 1; k < UpperLimit; k++) //get all permutations
@@ -79,7 +77,7 @@ namespace CounsellingTriads
                     if (myStudents.SingleGroup.Count == 0) //add in the first student manually
                     {
                         myStudents.SingleGroup.Add(myStudents.student);
-                        //  myStudents.StudentHistory[1].Add("1");
+
                         myStudents.StudentHistory[1].Add(myStudents.student);
                     }
                     else
@@ -112,13 +110,21 @@ namespace CounsellingTriads
                     }
 
                 }
-                //  count++;
                 this.Text = myStudents.Countgroups.ToString();
                 btnCalc.Text = "Groups Generated = " + myStudents.Countgroups.ToString();
-
-                // }
             }
         }
+
+        private void GenerateNameGroups()
+        {
+            lbxOutputNames.Items.Clear();
+            foreach (var items in myStudents.GeneratedGroups)
+            {
+                lbxOutputNames.Items.Add(Operations.StudentNames[items[0] - 1] + "  |  " + Operations.StudentNames[items[1] - 1] + "  |  " + Operations.StudentNames[items[2] - 1]);
+            }
+        }
+
+
 
         private void OutputGroups()
         {
@@ -127,16 +133,25 @@ namespace CounsellingTriads
             {
                 String Group = null;
                 myStudents.HasOneStudentBeenAdded = false; // reset for new group
+
+                int[] singleGroup = new int[3];//get an array of 3
+                int count = 0;//get a counter that goes to 3
                 foreach (var item in myStudents.SingleGroup)
                 {
-                    Group += item + " ";
-                }
 
+                    Group += item + " ";
+                    singleGroup[count] = Convert.ToInt16(item); // add in the 3 items
+                    count++;
+                }
+                myStudents.GeneratedGroups.Add(singleGroup); //list of arrays
                 myStudents.Countgroups++;
                 Operations.GroupsCount++;
                 lbxOutput.Items.Add(Group);
                 myStudents.SingleGroup.Clear(); //empty the list ready for the next one
             }
+
+
+
         }
 
         private void GenerateMembers()
@@ -170,32 +185,6 @@ namespace CounsellingTriads
                 }
             }
         }
-
-        //public void RandomSelection()
-        //{
-        //    bool isFindingAmatch = true;
-
-
-        //    if (myStudents.SingleGroup.Count == 0)
-        //    {
-        //        myStudents.SingleGroup.Add(myStudents.student);
-        //        myStudents.StudentHistory[1].Add(myStudents.student);
-        //    }
-
-        //    while (isFindingAmatch)
-        //    {
-        //        myStudents.student = myStudents.MyRnd.Next(1, 22).ToString();
-        //        GenerateMembers();
-        //    }
-
-        //    //add the student to the group
-        //    if (myStudents.HasStudentBeenBefore == false)
-        //    {
-        //        myStudents.SingleGroup.Add(myStudents.StudentToAdd);
-        //    }
-
-
-        //}
 
         private void rbUniques_CheckedChanged(object sender, EventArgs e)
         {
@@ -249,10 +238,36 @@ namespace CounsellingTriads
         {
             //   lbxOutputNames.Items.Clear();
 
+
         }
 
         private void btnGenerateNames_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void btnPrint_Click(object sender, EventArgs e)
+        {
+            string DateString = "";
+            DateTime date = DateTime.Now;
+
+            //hates saving with date symbols https://stackoverflow.com/questions/7348768/the-given-paths-format-is-not-supported
+            //  DateString = "\\" + date.ToShortDateString() + " Student List " + date.ToShortTimeString() + ".txt";
+            DateString = "Counselling Student List.txt";
+            List<string> Allgroups = new List<string>();
+
+
+            foreach (var line in lbxOutputNames.Items)
+            {
+                Allgroups.Add(line.ToString());
+            }
+
+            string path = Directory.GetCurrentDirectory();
+            string docPath =
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            //https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealllines?view=netframework-4.7.2
+            File.WriteAllLines(Path.Combine(docPath, DateString), Allgroups);
 
         }
     }
