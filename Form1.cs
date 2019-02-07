@@ -10,27 +10,34 @@ using System.Windows.Forms;
 
 namespace CounsellingTriads
 {
+    using System.IO;
+
     public partial class Form1 : Form
     {
-        private Students myStudents;
+        private Students myStudents = new Students();
 
 
         public Form1()
         {
             InitializeComponent();
-
-            myStudents = new Students();
-
-            //Instantiate the lists = names
-            for (int i = 1; i < 22; i++)
-            {
-                myStudents.StudentHistory[i] = new List<string>();
-            }
+            Operations.StudentNames.AddRange(Operations.LoadNames("names.txt").ToArray());
+            Operations.StudentNameCount = Operations.StudentNames.Count;
         }
 
         private void BtnCalc_Click(object sender, EventArgs e)
         {
+            lbxOutputNames.Items.Clear();
+            lbxOutputNames.Items.AddRange(Operations.StudentNames.ToArray());
 
+            myStudents = new Students();
+
+            //Instantiate the lists = names
+
+            int countTo = Operations.StudentNameCount + 1;
+            for (int i = 1; i < countTo; i++)
+            {
+                myStudents.StudentHistory[i] = new List<string>();
+            }
             lbxOutput.Items.Clear();
 
             GenerateGroups();
@@ -47,27 +54,29 @@ namespace CounsellingTriads
 
 
 
-
-            for (int k = 1; k < 21; k++) //get all permutations
+            int UpperLimit = Operations.StudentNameCount + 1;
+            for (int k = 1; k < UpperLimit; k++) //get all permutations
             {
-                for (int i = k; i < 22; i++)
+                for (int i = k; i < UpperLimit; i++)
                 {
+                    //reset for next student
                     myStudents.student = null;
+                    myStudents.HasOneStudentBeenAdded = false;
+                    myStudents.HasStudentBeenBefore = false;
+                    myStudents.StudentToAdd = null;  //reset it to null
 
                     //if random then generate rnd student number and use that
-                    if (myStudents.IsRnd == true)
+                    if (Operations.IsRnd == true)
                     {
                         myStudents.student = myStudents.MyRnd.Next(1, 22).ToString();
                     }
-                    else
+                    else //for other conditions
                     {
-                        myStudents.HasOneStudentBeenAdded = false;
                         myStudents.student = i.ToString(); //iterate though for loop
-                        myStudents.StudentToAdd = null;
                     }
                     //Need to add the first member manually or it crashes at the foreach
 
-                    if (myStudents.SingleGroup.Count == 0)
+                    if (myStudents.SingleGroup.Count == 0) //add in the first student manually
                     {
                         myStudents.SingleGroup.Add(myStudents.student);
                         //  myStudents.StudentHistory[1].Add("1");
@@ -75,12 +84,10 @@ namespace CounsellingTriads
                     }
                     else
                     {
-                        myStudents.HasStudentBeenBefore = false;
-
                         GenerateMembers();
 
-                        //you can have a pair of people in a group with history
-                        if (myStudents.IsUnique == false && myStudents.IsRnd == false)
+                        //you can have a PAIR of people in a group with history
+                        if (Operations.IsUnique == false && Operations.IsRnd == false)
                         {
 
                             //add the student to the group HasStudentBeenBefore == true &&
@@ -101,28 +108,34 @@ namespace CounsellingTriads
                             }
                         }
 
-
-
-                        //if the group has reached 3 then print it and clear it for the next group
-
-                        if (myStudents.SingleGroup.Count == 3)
-                        {
-                            String Group = null;
-                            myStudents.HasOneStudentBeenAdded = false; // reset for new group
-                            foreach (var item in myStudents.SingleGroup)
-                            {
-                                Group += item + " ";
-                            }
-                            myStudents.Countgroups++;
-                            lbxOutput.Items.Add(Group);
-                            myStudents.SingleGroup.Clear(); //empty the list ready for the next one
-                        }
+                        OutputGroups();
                     }
 
                 }
                 //  count++;
                 this.Text = myStudents.Countgroups.ToString();
+                btnCalc.Text = "Groups Generated = " + myStudents.Countgroups.ToString();
+
                 // }
+            }
+        }
+
+        private void OutputGroups()
+        {
+            //if the group has reached 3 then print it and clear it for the next group
+            if (myStudents.SingleGroup.Count == 3)
+            {
+                String Group = null;
+                myStudents.HasOneStudentBeenAdded = false; // reset for new group
+                foreach (var item in myStudents.SingleGroup)
+                {
+                    Group += item + " ";
+                }
+
+                myStudents.Countgroups++;
+                Operations.GroupsCount++;
+                lbxOutput.Items.Add(Group);
+                myStudents.SingleGroup.Clear(); //empty the list ready for the next one
             }
         }
 
@@ -189,8 +202,9 @@ namespace CounsellingTriads
 
             if (rbUniques.Checked == true)
             {
-                myStudents.IsUnique = true;
+                Operations.IsUnique = true;
                 lbxOutput.Items.Clear();
+                btnCalc.Text = "Generate Groups ";
             }
         }
 
@@ -198,31 +212,50 @@ namespace CounsellingTriads
         {
             if (rbNonUnique.Checked == true)
             {
-                myStudents.IsUnique = false;
+                Operations.IsUnique = false;
                 lbxOutput.Items.Clear();
+                btnCalc.Text = "Generate Groups ";
             }
 
         }
 
         private void rbnRnd_CheckedChanged(object sender, EventArgs e)
         {
-            if (rbNonUnique.Checked == true)
+            if (rbnRnd.Checked == true)
             {
-                myStudents.IsRnd = true;
-
+                Operations.IsRnd = true;
                 lbxOutput.Items.Clear();
+                btnCalc.Text = "Generate Groups ";
             }
             else
             {
-                myStudents.IsRnd = false;
+                Operations.IsRnd = false;
             }
+        }
+
+
+        private void btnLoadNames_Click(object sender, EventArgs e)
+        {
+            //Operations.StudentNames.AddRange(Operations.LoadNames("names.txt").ToArray());
+            //Operations.StudentNameCount = Operations.StudentNames.Count;
+
+
+            //lbxOutputNames.Items.AddRange(Operations.StudentNames.ToArray());
+
+        }
+
+
+        private void lbxOutputNames_SizeChanged_1(object sender, EventArgs e)
+        {
+            //   lbxOutputNames.Items.Clear();
+
+        }
+
+        private void btnGenerateNames_Click(object sender, EventArgs e)
+        {
+
         }
     }
 
-
-    internal class Group
-    {
-        public List<string> AllTeams = new List<string>();
-    }
 
 }
