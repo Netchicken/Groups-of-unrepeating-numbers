@@ -20,8 +20,10 @@ namespace CounsellingTriads
         public Form1()
         {
             InitializeComponent();
-            Operations.StudentNames.AddRange(Operations.LoadNames("names.txt").ToArray());
-            Operations.StudentNameCount = Operations.StudentNames.Count;
+
+            this.Text = "Generating Counselling Triads";
+            //   Operations.StudentNames.AddRange(LoadNames().ToArray());
+            //   Operations.StudentNameCount = Operations.StudentNames.Count;
         }
 
         private void BtnCalc_Click(object sender, EventArgs e)
@@ -34,6 +36,8 @@ namespace CounsellingTriads
             //Instantiate the lists = names
 
             int countTo = Operations.StudentNameCount + 1;
+            myStudents.StudentHistory = new List<string>[countTo];
+
             for (int i = 1; i < countTo; i++)
             {
                 myStudents.StudentHistory[i] = new List<string>();
@@ -66,7 +70,7 @@ namespace CounsellingTriads
                     //if random then generate rnd student number and use that
                     if (Operations.IsRnd == true)
                     {
-                        myStudents.student = myStudents.MyRnd.Next(1, 22).ToString();
+                        myStudents.student = myStudents.MyRnd.Next(1, UpperLimit).ToString();
                     }
                     else //for other conditions
                     {
@@ -110,7 +114,7 @@ namespace CounsellingTriads
                     }
 
                 }
-                this.Text = myStudents.Countgroups.ToString();
+                // this.Text = myStudents.Countgroups.ToString();
                 btnCalc.Text = "Groups Generated = " + myStudents.Countgroups.ToString();
             }
         }
@@ -225,12 +229,54 @@ namespace CounsellingTriads
 
         private void btnLoadNames_Click(object sender, EventArgs e)
         {
-            //Operations.StudentNames.AddRange(Operations.LoadNames("names.txt").ToArray());
-            //Operations.StudentNameCount = Operations.StudentNames.Count;
+            LoadNames();
+        }
 
+        private void LoadNames()
+        {
+            string[] error = { "No Names", "No Luck", "Its not in the correct place" };
+            //if the ofd clicked is Open (Yes or OK) then ...
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
 
-            //lbxOutputNames.Items.AddRange(Operations.StudentNames.ToArray());
+                //used a list as its just easier
+                List<string> lines = new List<string>();
 
+                //If the file exists then load it
+                if (File.Exists(ofd.FileName))
+                {
+                    // Read in lines from file.
+                    foreach (string line in File.ReadLines(ofd.FileName))
+                    {
+                        lines.Add(line);
+                    }
+                    //   return lines;
+                }
+
+                // return error;
+
+                Operations.StudentNames.AddRange(lines.ToArray());
+                Operations.StudentNameCount = Operations.StudentNames.Count;
+
+                lbxOutputNames.Items.Clear();
+                lbxOutputNames.Items.AddRange(Operations.StudentNames.ToArray());
+
+                //                // show the file name you have selected
+
+                //                StreamReader reader = new StreamReader(ofd.FileName);
+
+                //                string text = "";
+                //                //note the new ! = NOT so while its NOT end of the stream
+                //                while (!reader.EndOfStream)
+                //                {
+                //                    text += reader.ReadLine();
+                //                }
+
+                ////Operations.LoadNames() = text;
+                //                reader.Close();
+            }
+
+            //   return error;
         }
 
 
@@ -241,10 +287,7 @@ namespace CounsellingTriads
 
         }
 
-        private void btnGenerateNames_Click(object sender, EventArgs e)
-        {
 
-        }
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
@@ -253,7 +296,9 @@ namespace CounsellingTriads
 
             //hates saving with date symbols https://stackoverflow.com/questions/7348768/the-given-paths-format-is-not-supported
             //  DateString = "\\" + date.ToShortDateString() + " Student List " + date.ToShortTimeString() + ".txt";
-            DateString = "Counselling Student List.txt";
+
+            Operations.PrintCount++;
+            DateString = "Counselling Student List " + Operations.PrintCount + ".txt";
             List<string> Allgroups = new List<string>();
 
 
@@ -269,6 +314,7 @@ namespace CounsellingTriads
             //https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealllines?view=netframework-4.7.2
             File.WriteAllLines(Path.Combine(docPath, DateString), Allgroups);
 
+            MessageBox.Show("File printed to Desktop");
         }
     }
 

@@ -33,25 +33,26 @@ namespace CounsellingTriads
         public static List<string> StudentNames = new List<string>();
         public static int StudentNameCount = 0;
         public static int GroupsCount = 0;
+        public static int PrintCount = 0;
 
 
-        public static IEnumerable<string> LoadNames(string fileName)
-        {
-            //used a list as its just easier
-            List<string> lines = new List<string>();
+        //public static IEnumerable<string> LoadNames(string fileName)
+        //{
+        //    //used a list as its just easier
+        //    List<string> lines = new List<string>();
 
-            //If the file exists then load it
-            if (File.Exists(fileName))
-            {
-                // Read in lines from file.
-                foreach (string line in File.ReadLines(fileName))
-                {
-                    lines.Add(line);
-                }
-                return lines;
-            }
-            string[] error = { "No Names", "No Luck", "Its not in teh correct place" };
-            return error;
-        }
+        //    //If the file exists then load it
+        //    if (File.Exists(fileName))
+        //    {
+        //        // Read in lines from file.
+        //        foreach (string line in File.ReadLines(fileName))
+        //        {
+        //            lines.Add(line);
+        //        }
+        //        return lines;
+        //    }
+        //    string[] error = { "No Names", "No Luck", "Its not in teh correct place" };
+        //    return error;
+        //}
     }
 }
