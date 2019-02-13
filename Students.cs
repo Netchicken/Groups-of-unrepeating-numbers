@@ -8,7 +8,7 @@ namespace CounsellingTriads
 {
     using System.IO;
 
-    class Students
+    public class Students
     {
         public List<string> SingleGroup = new List<string>();
         public List<string>[] StudentHistory = new List<string>[22];

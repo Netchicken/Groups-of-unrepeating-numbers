@@ -1,11 +1,14 @@
 ﻿namespace CounsellingTriads
 {
+
     partial class Form1
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+
+
 
         /// <summary>
         /// Clean up any resources being used.
@@ -61,6 +64,7 @@
             this.lbxOutput.ScrollAlwaysVisible = true;
             this.lbxOutput.Size = new System.Drawing.Size(358, 1493);
             this.lbxOutput.TabIndex = 2;
+            this.lbxOutput.SelectedIndexChanged += new System.EventHandler(this.ListBoxMatchSelectedItems);
             // 
             // btnCalc
             // 
@@ -150,7 +154,6 @@
             this.lbxOutputNames.ScrollAlwaysVisible = true;
             this.lbxOutputNames.Size = new System.Drawing.Size(1722, 1493);
             this.lbxOutputNames.TabIndex = 10;
-            this.lbxOutputNames.SizeChanged += new System.EventHandler(this.lbxOutputNames_SizeChanged_1);
             // 
             // btnPrint
             // 
@@ -245,6 +248,7 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
+        //   private readonly RelationshipGeneration _relationshipGeneration;
     }
 }
 

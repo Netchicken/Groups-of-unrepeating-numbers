@@ -44,10 +44,37 @@ namespace CounsellingTriads
             }
             lbxOutput.Items.Clear();
 
-            GenerateGroups();
+            // GenerateGroups(); //on the Form
+
+            //loads the number combinations generated
+            lbxOutput.Items.AddRange(GenerateStudentGroups.GenerateGroups(myStudents).ToArray());
+
+            //  lbxOutput.Items.AddRange(GenerateStudentGroups.GenerateGroups(myStudents)); 
+
+
+
+            // this.Text = myStudents.Countgroups.ToString();
+            btnCalc.Text = "Groups Generated = " + myStudents.Countgroups.ToString();
+
             GenerateNameGroups();
         }
 
+
+
+
+
+        private void GenerateNameGroups()
+        {
+            lbxOutputNames.Items.Clear();
+            foreach (var items in myStudents.GeneratedGroups)
+            {
+                lbxOutputNames.Items.Add(Operations.StudentNames[items[0] - 1] + "  |  " + Operations.StudentNames[items[1] - 1] + "  |  " + Operations.StudentNames[items[2] - 1]);
+            }
+        }
+
+        //now extracted to class
+
+        #region Extracted to class
 
         private void GenerateGroups()
         {
@@ -110,27 +137,24 @@ namespace CounsellingTriads
                             }
                         }
 
-                        OutputGroups();
+                        //  OutputGroups();
+
+                        string line = OutputGroups();
+
+                        if (!string.IsNullOrEmpty(line))
+                        {
+                            lbxOutput.Items.Add(line);
+                        }
+
+
                     }
 
                 }
-                // this.Text = myStudents.Countgroups.ToString();
-                btnCalc.Text = "Groups Generated = " + myStudents.Countgroups.ToString();
+
             }
         }
 
-        private void GenerateNameGroups()
-        {
-            lbxOutputNames.Items.Clear();
-            foreach (var items in myStudents.GeneratedGroups)
-            {
-                lbxOutputNames.Items.Add(Operations.StudentNames[items[0] - 1] + "  |  " + Operations.StudentNames[items[1] - 1] + "  |  " + Operations.StudentNames[items[2] - 1]);
-            }
-        }
-
-
-
-        private void OutputGroups()
+        private string OutputGroups()
         {
             //if the group has reached 3 then print it and clear it for the next group
             if (myStudents.SingleGroup.Count == 3)
@@ -150,10 +174,14 @@ namespace CounsellingTriads
                 myStudents.GeneratedGroups.Add(singleGroup); //list of arrays
                 myStudents.Countgroups++;
                 Operations.GroupsCount++;
-                lbxOutput.Items.Add(Group);
+                //   lbxOutput.Items.Add(Group); //added a row 1,2,3
+
+
                 myStudents.SingleGroup.Clear(); //empty the list ready for the next one
+                return Group;
             }
 
+            return null;
 
 
         }
@@ -189,6 +217,8 @@ namespace CounsellingTriads
                 }
             }
         }
+        #endregion
+
 
         private void rbUniques_CheckedChanged(object sender, EventArgs e)
         {
@@ -234,6 +264,12 @@ namespace CounsellingTriads
 
         private void LoadNames()
         {
+            //empty existing data
+            Operations.StudentNames.Clear();
+            Operations.StudentNameCount = 0;
+            lbxOutput.Items.Clear();
+
+
             string[] error = { "No Names", "No Luck", "Its not in the correct place" };
             //if the ofd clicked is Open (Yes or OK) then ...
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -261,35 +297,17 @@ namespace CounsellingTriads
                 lbxOutputNames.Items.Clear();
                 lbxOutputNames.Items.AddRange(Operations.StudentNames.ToArray());
 
-                //                // show the file name you have selected
-
-                //                StreamReader reader = new StreamReader(ofd.FileName);
-
-                //                string text = "";
-                //                //note the new ! = NOT so while its NOT end of the stream
-                //                while (!reader.EndOfStream)
-                //                {
-                //                    text += reader.ReadLine();
-                //                }
-
-                ////Operations.LoadNames() = text;
-                //                reader.Close();
             }
 
-            //   return error;
         }
-
-
-        private void lbxOutputNames_SizeChanged_1(object sender, EventArgs e)
-        {
-            //   lbxOutputNames.Items.Clear();
-
-
-        }
-
 
 
         private void btnPrint_Click(object sender, EventArgs e)
+        {
+            PrintToFile();
+        }
+
+        private void PrintToFile()
         {
             string DateString = "";
             DateTime date = DateTime.Now;
@@ -315,6 +333,11 @@ namespace CounsellingTriads
             File.WriteAllLines(Path.Combine(docPath, DateString), Allgroups);
 
             MessageBox.Show("File printed to Desktop");
+        }
+
+        private void ListBoxMatchSelectedItems(object sender, EventArgs e)
+        {
+            lbxOutputNames.SelectedIndex = lbxOutput.SelectedIndex;
         }
     }
 
