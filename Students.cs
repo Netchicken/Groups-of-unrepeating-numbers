@@ -26,7 +26,7 @@ namespace CounsellingTriads
     }
 
     //needs to avoid being reset
-    static class Operations
+    public static class Operations
     {
         public static bool IsUnique = true; //Unique or NonUnique groups
         public static bool IsRnd = false; //using the rnd radiobutton

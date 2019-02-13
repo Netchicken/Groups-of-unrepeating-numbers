@@ -59,10 +59,6 @@ namespace CounsellingTriads
             GenerateNameGroups();
         }
 
-
-
-
-
         private void GenerateNameGroups()
         {
             lbxOutputNames.Items.Clear();
@@ -72,8 +68,126 @@ namespace CounsellingTriads
             }
         }
 
-        //now extracted to class
 
+        private void rbUniques_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (rbUniques.Checked == true)
+            {
+                Operations.IsUnique = true;
+                lbxOutput.Items.Clear();
+                btnCalc.Text = "Generate Groups ";
+            }
+        }
+
+        private void rbNonUnique_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbNonUnique.Checked == true)
+            {
+                Operations.IsUnique = false;
+                lbxOutput.Items.Clear();
+                btnCalc.Text = "Generate Groups ";
+            }
+
+        }
+
+        private void rbnRnd_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbnRnd.Checked == true)
+            {
+                Operations.IsRnd = true;
+                lbxOutput.Items.Clear();
+                btnCalc.Text = "Generate Groups ";
+            }
+            else
+            {
+                Operations.IsRnd = false;
+            }
+        }
+
+
+        private void btnLoadNames_Click(object sender, EventArgs e)
+        {
+            LoadNames();
+        }
+
+        private void LoadNames()
+        {
+            //empty existing data
+            Operations.StudentNames.Clear();
+            Operations.StudentNameCount = 0;
+            lbxOutput.Items.Clear();
+
+
+            string[] error = { "No Names", "No Luck", "Its not in the correct place" };
+            //if the ofd clicked is Open (Yes or OK) then ...
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+
+                //used a list as its just easier
+                List<string> lines = new List<string>();
+
+                //If the file exists then load it
+                if (File.Exists(ofd.FileName))
+                {
+                    // Read in lines from file.
+                    foreach (string line in File.ReadLines(ofd.FileName))
+                    {
+                        lines.Add(line);
+                    }
+
+                }
+
+                Operations.StudentNames.AddRange(lines.ToArray());
+                Operations.StudentNameCount = Operations.StudentNames.Count;
+
+                lbxOutputNames.Items.Clear();
+                lbxOutputNames.Items.AddRange(Operations.StudentNames.ToArray());
+
+            }
+
+        }
+
+
+        private void btnPrint_Click(object sender, EventArgs e)
+        {
+            PrintToFile();
+        }
+
+        private void PrintToFile()
+        {
+            string DateString = "";
+            DateTime date = DateTime.Now;
+
+            //hates saving with date symbols https://stackoverflow.com/questions/7348768/the-given-paths-format-is-not-supported
+            //  DateString = "\\" + date.ToShortDateString() + " Student List " + date.ToShortTimeString() + ".txt";
+
+            Operations.PrintCount++;
+            DateString = "Counselling Student List " + Operations.PrintCount + ".txt";
+            List<string> Allgroups = new List<string>();
+
+
+            foreach (var line in lbxOutputNames.Items)
+            {
+                Allgroups.Add(line.ToString());
+            }
+
+            string path = Directory.GetCurrentDirectory();
+            string docPath =
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            //https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealllines?view=netframework-4.7.2
+            File.WriteAllLines(Path.Combine(docPath, DateString), Allgroups);
+
+            MessageBox.Show("File printed to Desktop");
+        }
+
+        private void ListBoxMatchSelectedItems(object sender, EventArgs e)
+        {
+            lbxOutputNames.SelectedIndex = lbxOutput.SelectedIndex;
+        }
+
+        //now extracted to class
         #region Extracted to class
 
         private void GenerateGroups()
@@ -220,125 +334,9 @@ namespace CounsellingTriads
         #endregion
 
 
-        private void rbUniques_CheckedChanged(object sender, EventArgs e)
-        {
-
-            if (rbUniques.Checked == true)
-            {
-                Operations.IsUnique = true;
-                lbxOutput.Items.Clear();
-                btnCalc.Text = "Generate Groups ";
-            }
-        }
-
-        private void rbNonUnique_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rbNonUnique.Checked == true)
-            {
-                Operations.IsUnique = false;
-                lbxOutput.Items.Clear();
-                btnCalc.Text = "Generate Groups ";
-            }
-
-        }
-
-        private void rbnRnd_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rbnRnd.Checked == true)
-            {
-                Operations.IsRnd = true;
-                lbxOutput.Items.Clear();
-                btnCalc.Text = "Generate Groups ";
-            }
-            else
-            {
-                Operations.IsRnd = false;
-            }
-        }
 
 
-        private void btnLoadNames_Click(object sender, EventArgs e)
-        {
-            LoadNames();
-        }
 
-        private void LoadNames()
-        {
-            //empty existing data
-            Operations.StudentNames.Clear();
-            Operations.StudentNameCount = 0;
-            lbxOutput.Items.Clear();
-
-
-            string[] error = { "No Names", "No Luck", "Its not in the correct place" };
-            //if the ofd clicked is Open (Yes or OK) then ...
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-
-                //used a list as its just easier
-                List<string> lines = new List<string>();
-
-                //If the file exists then load it
-                if (File.Exists(ofd.FileName))
-                {
-                    // Read in lines from file.
-                    foreach (string line in File.ReadLines(ofd.FileName))
-                    {
-                        lines.Add(line);
-                    }
-                    //   return lines;
-                }
-
-                // return error;
-
-                Operations.StudentNames.AddRange(lines.ToArray());
-                Operations.StudentNameCount = Operations.StudentNames.Count;
-
-                lbxOutputNames.Items.Clear();
-                lbxOutputNames.Items.AddRange(Operations.StudentNames.ToArray());
-
-            }
-
-        }
-
-
-        private void btnPrint_Click(object sender, EventArgs e)
-        {
-            PrintToFile();
-        }
-
-        private void PrintToFile()
-        {
-            string DateString = "";
-            DateTime date = DateTime.Now;
-
-            //hates saving with date symbols https://stackoverflow.com/questions/7348768/the-given-paths-format-is-not-supported
-            //  DateString = "\\" + date.ToShortDateString() + " Student List " + date.ToShortTimeString() + ".txt";
-
-            Operations.PrintCount++;
-            DateString = "Counselling Student List " + Operations.PrintCount + ".txt";
-            List<string> Allgroups = new List<string>();
-
-
-            foreach (var line in lbxOutputNames.Items)
-            {
-                Allgroups.Add(line.ToString());
-            }
-
-            string path = Directory.GetCurrentDirectory();
-            string docPath =
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            //https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealllines?view=netframework-4.7.2
-            File.WriteAllLines(Path.Combine(docPath, DateString), Allgroups);
-
-            MessageBox.Show("File printed to Desktop");
-        }
-
-        private void ListBoxMatchSelectedItems(object sender, EventArgs e)
-        {
-            lbxOutputNames.SelectedIndex = lbxOutput.SelectedIndex;
-        }
     }
 
 
