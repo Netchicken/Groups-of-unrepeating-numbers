@@ -21,8 +21,8 @@ namespace CounsellingTriads
 
         public int CountUniquesGenerated(Students myStudents)
         {
-
-            return GenerateStudentGroups.GenerateGroups(myStudents).Count();
+            var output = GenerateStudentGroups.GenerateGroups(myStudents);
+            return myStudents.Countgroups;
         }
 
     }
